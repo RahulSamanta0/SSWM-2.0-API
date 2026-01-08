@@ -3,29 +3,28 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let pool;
-export default function getPool() {
-  if (!pool) {
-    pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-      multipleStatements: true
-    });
-    pool.getConnection()
-      .then(connection => {
-        console.log('Database connected successfully.');
-        connection.release();
-      })
-      .catch(err => {
-        console.error('Error connecting to the database:', err);
-      });
-  }
-  return pool;
-}
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '3306'),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  multipleStatements: true, // CRITICAL: Required for stored procedures with OUT parameters
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0
+});
 
+// Test database connection
+pool.getConnection()
+  .then(connection => {
+    console.log('✅ Database connection established successfully');
+    connection.release();
+  })
+  .catch(err => {
+    console.error('❌ Database connection failed:', err.message);
+  });
 
+export default pool;

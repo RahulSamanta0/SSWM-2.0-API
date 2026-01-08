@@ -1,0 +1,1111 @@
+{
+    "info": {
+        "name": "SSWM Complete API Collection",
+        "description": "Smart Solid Waste Management System - Complete API Collection\n\n**Roles:**\n- Block Admin: Dashboard, Reports, Vehicles, Dump Yards, Households, GP/Municipality Management\n- GP/Municipality Admin: Collectors, Routes, Collection Tracking, Segregation Reports, Dump Monitoring, Vendor Coordination, GP Reports",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "🔐 Authentication",
+            "item": [
+                {
+                    "name": "Login (Block Admin)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.collectionVariables.set('token', jsonData.accessToken);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"block_admin\",\n  \"password\": \"password123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login as Block Admin"
+                    }
+                },
+                {
+                    "name": "Login (GP/Municipality Admin)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.collectionVariables.set('token', jsonData.accessToken);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"gp_admin\",\n  \"password\": \"password123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login as GP/Municipality Admin"
+                    }
+                }
+            ],
+            "description": "Authentication endpoints for all user roles"
+        },
+        {
+            "name": "📊 Block Admin APIs",
+            "item": [
+                {
+                    "name": "Dashboard",
+                    "item": [
+                        {
+                            "name": "Get Dashboard Overview",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/dashboard/overview",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "dashboard",
+                                        "overview"
+                                    ]
+                                },
+                                "description": "Get complete dashboard data (stats, quick analytics, GP/Municipality data, charts, activities)"
+                            }
+                        }
+                    ],
+                    "description": "Block-level dashboard APIs"
+                },
+                {
+                    "name": "Reports & Analytics",
+                    "item": [
+                        {
+                            "name": "Get Collection Trend",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/reports/collection-trend?period=week",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "reports",
+                                        "collection-trend"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "period",
+                                            "value": "week",
+                                            "description": "week, month, or custom with startDate/endDate"
+                                        },
+                                        {
+                                            "key": "startDate",
+                                            "value": "",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "endDate",
+                                            "value": "",
+                                            "disabled": true
+                                        }
+                                    ]
+                                },
+                                "description": "Time-series data for bar/line charts"
+                            }
+                        },
+                        {
+                            "name": "Get Waste Distribution",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/reports/waste-distribution",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "reports",
+                                        "waste-distribution"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "startDate",
+                                            "value": "",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "endDate",
+                                            "value": "",
+                                            "disabled": true
+                                        }
+                                    ]
+                                },
+                                "description": "Waste category breakdown for pie chart"
+                            }
+                        },
+                        {
+                            "name": "Get Collection Logs",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/reports/collection-logs?page=1&pageSize=20",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "reports",
+                                        "collection-logs"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "20"
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "date",
+                                            "value": "",
+                                            "disabled": true
+                                        }
+                                    ]
+                                },
+                                "description": "Detailed filterable collection records with pagination"
+                            }
+                        },
+                        {
+                            "name": "Get Report Summary",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/reports/summary",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "reports",
+                                        "summary"
+                                    ]
+                                },
+                                "description": "Executive summary statistics"
+                            }
+                        }
+                    ],
+                    "description": "Block-level reports and analytics"
+                },
+                {
+                    "name": "Dump Yards",
+                    "item": [
+                        {
+                            "name": "Get Dump Status Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/dump-yards/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "dump-yards",
+                                        "stats"
+                                    ]
+                                },
+                                "description": "Dashboard metrics (capacity, utilization, critical yards)"
+                            }
+                        },
+                        {
+                            "name": "Get Dump Yards List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/dump-yards/list",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "dump-yards",
+                                        "list"
+                                    ]
+                                },
+                                "description": "List of all dump yards with status"
+                            }
+                        }
+                    ],
+                    "description": "Dump yard management and tracking"
+                },
+                {
+                    "name": "Vehicles",
+                    "item": [
+                        {
+                            "name": "Get Vehicles List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/vehicles/list",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "vehicles",
+                                        "list"
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "description": "Vehicle management"
+                },
+                {
+                    "name": "Households",
+                    "item": [
+                        {
+                            "name": "Get Households List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/households/list?page=1&pageSize=20",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "households",
+                                        "list"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "20"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "description": "Household management"
+                },
+                {
+                    "name": "GP & Municipality Management",
+                    "item": [
+                        {
+                            "name": "Get GPs List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp-municipality/gps",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp-municipality",
+                                        "gps"
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "description": "GP and Municipality management"
+                }
+            ],
+            "description": "All Block Admin level APIs"
+        },
+        {
+            "name": "🏘️ GP/Municipality Admin APIs",
+            "item": [
+                {
+                    "name": "Collectors Management",
+                    "item": [
+                        {
+                            "name": "Get Collectors Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/collectors/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "collectors",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Collectors List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/collectors/list?page=1&pageSize=20&search=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "collectors",
+                                        "list"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "20"
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Add Collector",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"John Doe\",\n  \"username\": \"john.doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"9876543210\",\n  \"password\": \"password123\",\n  \"routeId\": null,\n  \"vehicleId\": null\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/collectors/add",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "collectors",
+                                        "add"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Collector",
+                            "request": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"phone\": \"9876543211\",\n  \"routeId\": 5,\n  \"vehicleId\": 3,\n  \"status\": \"active\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/collectors/update/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "collectors",
+                                        "update",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Routes Management",
+                    "item": [
+                        {
+                            "name": "Get Routes Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/routes/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "routes",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Routes List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/routes/list?search=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "routes",
+                                        "list"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "search",
+                                            "value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Route",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"routeName\": \"North Zone Route\",\n  \"wardIds\": null,\n  \"houseIds\": [1, 2, 3],\n  \"collectorId\": 5\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/routes/add",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "routes",
+                                        "add"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Wards",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/routes/wards",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "routes",
+                                        "wards"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Houses by Ward",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/routes/houses?wardNumber=1",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "routes",
+                                        "houses"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "wardNumber",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Collection Tracking",
+                    "item": [
+                        {
+                            "name": "Get Collection Tracking Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/collection-tracking/stats?date=2026-01-08",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "collection-tracking",
+                                        "stats"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "date",
+                                            "value": "2026-01-08"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Collection Tracking Routes",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/collection-tracking/routes?date=2026-01-08&search=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "collection-tracking",
+                                        "routes"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "date",
+                                            "value": "2026-01-08"
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Segregation Reports",
+                    "item": [
+                        {
+                            "name": "Get Segregation Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/segregation-reports/stats?dateFrom=2026-01-01&dateTo=2026-01-08",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "segregation-reports",
+                                        "stats"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "dateFrom",
+                                            "value": "2026-01-01"
+                                        },
+                                        {
+                                            "key": "dateTo",
+                                            "value": "2026-01-08"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Segregation by Ward",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/segregation-reports/wards?dateFrom=2026-01-01&dateTo=2026-01-08&search=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "segregation-reports",
+                                        "wards"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "dateFrom",
+                                            "value": "2026-01-01"
+                                        },
+                                        {
+                                            "key": "dateTo",
+                                            "value": "2026-01-08"
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Dump Monitoring",
+                    "item": [
+                        {
+                            "name": "Get Dump Monitoring Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/dump-monitoring/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "dump-monitoring",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Dump Sites List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/dump-monitoring/sites?search=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "dump-monitoring",
+                                        "sites"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "search",
+                                            "value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Vendor Coordination",
+                    "item": [
+                        {
+                            "name": "Get Vendor Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/vendor-coordination/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "vendor-coordination",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Vendors List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/vendor-coordination/vendors?search=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "vendor-coordination",
+                                        "vendors"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "search",
+                                            "value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "GP Reports & Analytics",
+                    "item": [
+                        {
+                            "name": "Get Weekly Collection Report",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/reports/weekly-collection",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "reports",
+                                        "weekly-collection"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Category Distribution",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/reports/category-distribution",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "reports",
+                                        "category-distribution"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Collection Logs",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/reports/collection-logs?status=&date=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "reports",
+                                        "collection-logs"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "status",
+                                            "value": ""
+                                        },
+                                        {
+                                            "key": "date",
+                                            "value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "description": "All GP/Municipality Admin level APIs"
+        },
+        {
+            "name": "⚕️ Health Check",
+            "item": [
+                {
+                    "name": "Server Health",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/health",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

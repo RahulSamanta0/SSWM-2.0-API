@@ -31,27 +31,32 @@ import gpVendorCoordinationRoutes from './routes/gp/vendorCoordinationRoutes.js'
 import gpReportsRoutes from './routes/gp/reportsRoutes.js';
 import gpHouseholdsRoutes from './routes/gp/householdsRoutes.js';
 
-// Load environment variables
+// Load env
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// =====================================================
+// ✅ CORS CONFIG (VERCEL FIX)
+// =====================================================
+const corsOptions = {
+  origin: '*', // allow all origins
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+// MUST BE FIRST
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // <-- preflight handler
+
+// =====================================================
 // Middleware
-app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'https://sswm-2-0-api.vercel.app'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
-}));
+// =====================================================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Request logging middleware (development)
+// Request logging (dev only)
 if (process.env.NODE_ENV === 'development') {
   app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
@@ -59,30 +64,32 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// Health check route
+// =====================================================
+// Health Check
+// =====================================================
 app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Server is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
-// ======================================================================================
+// =====================================================
 // API ROUTES
-// ======================================================================================
+// =====================================================
 
 // Auth (Public)
 app.use('/api/auth', authRoutes);
 
-// Block Admin Routes (require block_admin role)
+// Block Admin
 app.use('/api/block/dashboard', blockDashboardRoutes);
 app.use('/api/block/reports', blockReportsRoutes);
 app.use('/api/block/gp-municipality', blockGpMunicipalityRoutes);
 app.use('/api/block/vehicles', blockVehiclesRoutes);
 app.use('/api/block/dump-yards', blockDumpYardsRoutes);
 
-// District Admin Routes (require district_admin role)
+// District Admin
 app.use('/api/district/blocks-municipalities', districtBlocksMunRoutes);
 app.use('/api/district/block-admins', districtBlockAdminsRoutes);
 app.use('/api/district/vehicles', districtVehiclesRoutes);
@@ -90,7 +97,7 @@ app.use('/api/district/waste-operations', districtWasteOperationsRoutes);
 app.use('/api/district/dump-yard', districtDumpYardRoutes);
 app.use('/api/district/reports', districtReportsRoutes);
 
-// GP/Municipality Admin Routes (require gp_admin or municipality_admin role)
+// GP / Municipality Admin
 app.use('/api/gp/dashboard', gpDashboardRoutes);
 app.use('/api/gp/collectors', gpCollectorsRoutes);
 app.use('/api/gp/routes', gpRoutesRoutes);
@@ -101,41 +108,42 @@ app.use('/api/gp/vendor-coordination', gpVendorCoordinationRoutes);
 app.use('/api/gp/reports', gpReportsRoutes);
 app.use('/api/gp/households', gpHouseholdsRoutes);
 
-// ======================================================================================
+// =====================================================
 // ERROR HANDLERS
-// ======================================================================================
+// =====================================================
 
-// 404 handler
+// 404
 app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: 'Route not found',
-    statusCode: 404
+    statusCode: 404,
   });
 });
 
-// Global error handling middleware
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error('Global error handler:', err);
+  console.error('Global error:', err);
   res.status(500).json({
     success: false,
     message: 'Internal server error',
     statusCode: 500,
-    ...(process.env.NODE_ENV === 'development' && { error: err.message })
+    ...(process.env.NODE_ENV === 'development' && { error: err.message }),
   });
 });
 
-// Start server
+// =====================================================
+// START SERVER (LOCAL)
+// =====================================================
 app.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════════════════╗
 ║   Smart Waste Management System - Backend API     ║
 ╠════════════════════════════════════════════════════╣
-║   Server running on port: ${PORT.toString().padEnd(30)}║
-║   Environment: ${(process.env.NODE_ENV || 'development').padEnd(35)}║
-║   Database: ${(process.env.DB_NAME || '').padEnd(38)}║
+║   Server running on port: ${PORT}
+║   Environment: ${process.env.NODE_ENV || 'development'}
 ╚════════════════════════════════════════════════════╝
-    `);
+  `);
 });
 
 export default app;

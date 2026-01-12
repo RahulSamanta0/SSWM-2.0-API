@@ -1,7 +1,7 @@
 {
     "info": {
         "name": "SSWM Complete API Collection",
-        "description": "Smart Solid Waste Management System - Complete API Collection\n\n**Roles:**\n- Block Admin: Dashboard, Reports, Vehicles, Dump Yards, Households, GP/Municipality Management\n- GP/Municipality Admin: Collectors, Routes, Collection Tracking, Segregation Reports, Dump Monitoring, Vendor Coordination, GP Reports",
+        "description": "Smart Solid Waste Management System - Complete API Collection\n\n**Roles:**\n- Block Admin: Dashboard, Reports, Vehicles, Dump Yards, GP/Municipality Management\n- GP/Municipality Admin: Collectors, Routes, Collection Tracking, Segregation Reports, Dump Monitoring, Vendor Coordination, GP Reports, Households",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "variable": [
@@ -11,7 +11,12 @@
             "type": "string"
         },
         {
-            "key": "token",
+            "key": "blockAdminToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "gpAdminToken",
             "value": "",
             "type": "string"
         }
@@ -21,6 +26,37 @@
             "name": "🔐 Authentication",
             "item": [
                 {
+                    "description": "GP/Municipality dashboard",
+                    "name": "Dashboard",
+                    "item": [
+                        {
+                            "name": "Get GP Dashboard Overview",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "raw": "{{baseUrl}}/api/gp/dashboard/overview",
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "dashboard",
+                                        "overview"
+                                    ]
+                                },
+                                "description": "Get complete dashboard data for GP/Municipality admin",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{gpAdminToken}}"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "Login (Block Admin)",
                     "event": [
                         {
@@ -29,7 +65,7 @@
                                 "exec": [
                                     "if (pm.response.code === 200) {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.collectionVariables.set('token', jsonData.accessToken);",
+                                    "    pm.collectionVariables.set(\u0027blockAdminToken\u0027, jsonData.data.accessToken);",
                                     "}"
                                 ]
                             }
@@ -40,7 +76,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"username\": \"block_admin\",\n  \"password\": \"password123\"\n}",
+                            "raw": "{\n  \"username\": \"block_admin_nk\",\n  \"password\": \"pass1234\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -70,7 +106,7 @@
                                 "exec": [
                                     "if (pm.response.code === 200) {",
                                     "    var jsonData = pm.response.json();",
-                                    "    pm.collectionVariables.set('token', jsonData.accessToken);",
+                                    "    pm.collectionVariables.set(\u0027gpAdminToken\u0027, jsonData.data.accessToken);",
                                     "}"
                                 ]
                             }
@@ -81,7 +117,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"username\": \"gp_admin\",\n  \"password\": \"password123\"\n}",
+                            "raw": "{\n  \"username\": \"gp_admin_narendrapur\",\n  \"password\": \"pass1234\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -101,6 +137,103 @@
                         },
                         "description": "Login as GP/Municipality Admin"
                     }
+                },
+                {
+                    "name": "Refresh Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"refreshToken\": \"YOUR_REFRESH_TOKEN\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/refresh",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "refresh"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Current User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{blockAdminToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "me"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{blockAdminToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/logout",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "logout"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{blockAdminToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/profile",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "profile"
+                            ]
+                        },
+                        "description": "Get detailed user profile with jurisdiction names"
+                    }
                 }
             ],
             "description": "Authentication endpoints for all user roles"
@@ -118,16 +251,17 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/dashboard/overview",
+                                    "raw": "{{baseUrl}}/api/block/dashboard/overview",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "dashboard",
                                         "overview"
                                     ]
@@ -139,7 +273,7 @@
                     "description": "Block-level dashboard APIs"
                 },
                 {
-                    "name": "Reports & Analytics",
+                    "name": "Reports \u0026 Analytics",
                     "item": [
                         {
                             "name": "Get Collection Trend",
@@ -148,16 +282,17 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/reports/collection-trend?period=week",
+                                    "raw": "{{baseUrl}}/api/block/reports/collection-trend?period=week",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "reports",
                                         "collection-trend"
                                     ],
@@ -166,16 +301,6 @@
                                             "key": "period",
                                             "value": "week",
                                             "description": "week, month, or custom with startDate/endDate"
-                                        },
-                                        {
-                                            "key": "startDate",
-                                            "value": "",
-                                            "disabled": true
-                                        },
-                                        {
-                                            "key": "endDate",
-                                            "value": "",
-                                            "disabled": true
                                         }
                                     ]
                                 },
@@ -189,30 +314,19 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/reports/waste-distribution",
+                                    "raw": "{{baseUrl}}/api/block/reports/waste-distribution",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "reports",
                                         "waste-distribution"
-                                    ],
-                                    "query": [
-                                        {
-                                            "key": "startDate",
-                                            "value": "",
-                                            "disabled": true
-                                        },
-                                        {
-                                            "key": "endDate",
-                                            "value": "",
-                                            "disabled": true
-                                        }
                                     ]
                                 },
                                 "description": "Waste category breakdown for pie chart"
@@ -225,16 +339,17 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/reports/collection-logs?page=1&pageSize=20",
+                                    "raw": "{{baseUrl}}/api/block/reports/collection-logs?page=1\u0026pageSize=20",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "reports",
                                         "collection-logs"
                                     ],
@@ -246,16 +361,6 @@
                                         {
                                             "key": "pageSize",
                                             "value": "20"
-                                        },
-                                        {
-                                            "key": "status",
-                                            "value": "",
-                                            "disabled": true
-                                        },
-                                        {
-                                            "key": "date",
-                                            "value": "",
-                                            "disabled": true
                                         }
                                     ]
                                 },
@@ -269,16 +374,17 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/reports/summary",
+                                    "raw": "{{baseUrl}}/api/block/reports/summary",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "reports",
                                         "summary"
                                     ]
@@ -299,16 +405,17 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/dump-yards/stats",
+                                    "raw": "{{baseUrl}}/api/block/dump-yards/stats",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "dump-yards",
                                         "stats"
                                     ]
@@ -323,16 +430,17 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/dump-yards/list",
+                                    "raw": "{{baseUrl}}/api/block/dump-yards/list",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "dump-yards",
                                         "list"
                                     ]
@@ -347,24 +455,96 @@
                     "name": "Vehicles",
                     "item": [
                         {
+                            "name": "Get Vehicle Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/block/vehicles/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "block",
+                                        "vehicles",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
                             "name": "Get Vehicles List",
                             "request": {
                                 "method": "GET",
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/vehicles/list",
+                                    "raw": "{{baseUrl}}/api/block/vehicles/list?type=all\u0026page=1\u0026pageSize=15",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "vehicles",
                                         "list"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "type",
+                                            "value": "all"
+                                        },
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "15"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Add Vehicle",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"registrationNumber\": \"WB-01-AB-1234\",\n  \"vehicleType\": \"truck\",\n  \"capacityKg\": 4000,\n  \"gpId\": 1\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/block/vehicles/add",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "block",
+                                        "vehicles",
+                                        "add"
                                     ]
                                 }
                             }
@@ -373,66 +553,132 @@
                     "description": "Vehicle management"
                 },
                 {
-                    "name": "Households",
+                    "name": "GP \u0026 Municipality Management",
                     "item": [
                         {
-                            "name": "Get Households List",
+                            "name": "Get Stats",
                             "request": {
                                 "method": "GET",
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/households/list?page=1&pageSize=20",
+                                    "raw": "{{baseUrl}}/api/block/gp-municipality/stats",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "households",
+                                        "block",
+                                        "gp-municipality",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get List (All)",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/block/gp-municipality/list?type=all\u0026page=1\u0026pageSize=10",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "block",
+                                        "gp-municipality",
                                         "list"
                                     ],
                                     "query": [
+                                        {
+                                            "key": "type",
+                                            "value": "all"
+                                        },
                                         {
                                             "key": "page",
                                             "value": "1"
                                         },
                                         {
                                             "key": "pageSize",
-                                            "value": "20"
+                                            "value": "10"
                                         }
                                     ]
                                 }
                             }
-                        }
-                    ],
-                    "description": "Household management"
-                },
-                {
-                    "name": "GP & Municipality Management",
-                    "item": [
+                        },
                         {
-                            "name": "Get GPs List",
+                            "name": "Add GP",
                             "request": {
-                                "method": "GET",
+                                "method": "POST",
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{blockAdminToken}}"
                                     }
                                 ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"GP Rampur\",\n  \"population\": 15000,\n  \"areaSqkm\": 25.5,\n  \"adminUsername\": \"gp_admin_rampur\",\n  \"adminEmail\": \"admin.rampur@sswm.wb.gov.in\",\n  \"adminFullName\": \"Ramesh Kumar\",\n  \"adminPhone\": \"9876543210\",\n  \"adminPassword\": \"pass1234\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/gp-municipality/gps",
+                                    "raw": "{{baseUrl}}/api/block/gp-municipality/add-gp",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
                                     "path": [
                                         "api",
+                                        "block",
                                         "gp-municipality",
-                                        "gps"
+                                        "add-gp"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Add Municipality",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Municipality A\",\n  \"population\": 50000,\n  \"areaSqkm\": 45.8,\n  \"wardsCount\": 15,\n  \"adminUsername\": \"mun_admin_a\",\n  \"adminEmail\": \"admin.mun.a@sswm.wb.gov.in\",\n  \"adminFullName\": \"Priya Verma\",\n  \"adminPhone\": \"9876543211\",\n  \"adminPassword\": \"pass1234\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/block/gp-municipality/add-municipality",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "block",
+                                        "gp-municipality",
+                                        "add-municipality"
                                     ]
                                 }
                             }
@@ -456,7 +702,7 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -480,11 +726,11 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/gp/collectors/list?page=1&pageSize=20&search=",
+                                    "raw": "{{baseUrl}}/api/gp/collectors/list?page=1\u0026pageSize=20\u0026search=",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -518,12 +764,12 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"fullName\": \"John Doe\",\n  \"username\": \"john.doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"9876543210\",\n  \"password\": \"password123\",\n  \"routeId\": null,\n  \"vehicleId\": null\n}",
+                                    "raw": "{\n  \"fullName\": \"Arun Verma\",\n  \"username\": \"arun.verma\",\n  \"email\": \"arun@example.com\",\n  \"phone\": \"9876543210\",\n  \"password\": \"pass123\",\n  \"routeId\": null,\n  \"vehicleId\": null\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -551,12 +797,12 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"phone\": \"9876543211\",\n  \"routeId\": 5,\n  \"vehicleId\": 3,\n  \"status\": \"active\"\n}",
+                                    "raw": "{\n  \"fullName\": \"Arun Kumar Verma\",\n  \"phone\": \"9876543211\",\n  \"routeId\": 5,\n  \"vehicleId\": 3,\n  \"status\": \"active\"\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -584,7 +830,8 @@
                                 }
                             }
                         }
-                    ]
+                    ],
+                    "description": "Collector management for GP/Municipality"
                 },
                 {
                     "name": "Routes Management",
@@ -596,7 +843,7 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -620,11 +867,11 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/gp/routes/list?search=",
+                                    "raw": "{{baseUrl}}/api/gp/routes/list?search=\u0026page=1\u0026pageSize=10",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -638,6 +885,14 @@
                                         {
                                             "key": "search",
                                             "value": ""
+                                        },
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "10"
                                         }
                                     ]
                                 }
@@ -650,12 +905,12 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"routeName\": \"North Zone Route\",\n  \"wardIds\": null,\n  \"houseIds\": [1, 2, 3],\n  \"collectorId\": 5\n}",
+                                    "raw": "{\n  \"routeName\": \"North Zone Route\",\n  \"houseIds\": [1, 2, 3, 45, 67, 89],\n  \"collectorId\": 5\n}",
                                     "options": {
                                         "raw": {
                                             "language": "json"
@@ -683,7 +938,7 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -707,11 +962,11 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/gp/routes/houses?wardNumber=1",
+                                    "raw": "{{baseUrl}}/api/gp/routes/houses?wardNumber=Ward 1",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -724,13 +979,14 @@
                                     "query": [
                                         {
                                             "key": "wardNumber",
-                                            "value": "1"
+                                            "value": "Ward 1"
                                         }
                                     ]
                                 }
                             }
                         }
-                    ]
+                    ],
+                    "description": "Route management for GP/Municipality"
                 },
                 {
                     "name": "Collection Tracking",
@@ -742,7 +998,7 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -772,11 +1028,11 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/gp/collection-tracking/routes?date=2026-01-08&search=",
+                                    "raw": "{{baseUrl}}/api/gp/collection-tracking/routes?date=2026-01-08\u0026search=",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -799,7 +1055,8 @@
                                 }
                             }
                         }
-                    ]
+                    ],
+                    "description": "Collection tracking for GP/Municipality"
                 },
                 {
                     "name": "Segregation Reports",
@@ -811,11 +1068,11 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/gp/segregation-reports/stats?dateFrom=2026-01-01&dateTo=2026-01-08",
+                                    "raw": "{{baseUrl}}/api/gp/segregation-reports/stats?dateFrom=2026-01-01\u0026dateTo=2026-01-08",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -839,17 +1096,17 @@
                             }
                         },
                         {
-                            "name": "Get Segregation by Ward",
+                            "name": "Get Ward-wise Segregation",
                             "request": {
                                 "method": "GET",
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/gp/segregation-reports/wards?dateFrom=2026-01-01&dateTo=2026-01-08&search=",
+                                    "raw": "{{baseUrl}}/api/gp/segregation-reports/wards?dateFrom=2026-01-01\u0026dateTo=2026-01-08\u0026search=",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -876,7 +1133,8 @@
                                 }
                             }
                         }
-                    ]
+                    ],
+                    "description": "Segregation reports for GP/Municipality"
                 },
                 {
                     "name": "Dump Monitoring",
@@ -888,7 +1146,7 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -912,7 +1170,7 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -935,19 +1193,20 @@
                                 }
                             }
                         }
-                    ]
+                    ],
+                    "description": "Dump monitoring for GP/Municipality"
                 },
                 {
                     "name": "Vendor Coordination",
                     "item": [
                         {
-                            "name": "Get Vendor Stats",
+                            "name": "Get Vendor Coordination Stats",
                             "request": {
                                 "method": "GET",
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -971,7 +1230,7 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -994,19 +1253,20 @@
                                 }
                             }
                         }
-                    ]
+                    ],
+                    "description": "Vendor coordination for GP/Municipality"
                 },
                 {
-                    "name": "GP Reports & Analytics",
+                    "name": "GP Reports \u0026 Analytics",
                     "item": [
                         {
-                            "name": "Get Weekly Collection Report",
+                            "name": "Get Weekly Collection",
                             "request": {
                                 "method": "GET",
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -1030,7 +1290,7 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
@@ -1054,11 +1314,11 @@
                                 "header": [
                                     {
                                         "key": "Authorization",
-                                        "value": "Bearer {{token}}"
+                                        "value": "Bearer {{gpAdminToken}}"
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{baseUrl}}/api/gp/reports/collection-logs?status=&date=",
+                                    "raw": "{{baseUrl}}/api/gp/reports/collection-logs?status=\u0026date=",
                                     "host": [
                                         "{{baseUrl}}"
                                     ],
@@ -1081,31 +1341,386 @@
                                 }
                             }
                         }
-                    ]
+                    ],
+                    "description": "GP-level reports and analytics"
+                },
+                {
+                    "name": "Households Management",
+                    "item": [
+                        {
+                            "name": "Get Household Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{gpAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/households/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "households",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Households List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{gpAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/households?page=1\u0026pageSize=15\u0026ward=\u0026qrStatus=\u0026search=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "households"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "15"
+                                        },
+                                        {
+                                            "key": "ward",
+                                            "value": ""
+                                        },
+                                        {
+                                            "key": "qrStatus",
+                                            "value": ""
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Register New House",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{gpAdminToken}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"wardNumber\": \"1\",\n  \"zone\": \"Zone A\",\n  \"address\": \"123 Main Street, Narendrapur\",\n  \"headOfHousehold\": \"Ram Kumar\",\n  \"familyMembers\": 4,\n  \"phone\": \"9876543210\"\n}",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    }
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/households/register",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "households",
+                                        "register"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Household Details",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{gpAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/gp/households/:id",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "gp",
+                                        "households",
+                                        ":id"
+                                    ],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "description": "Household management for GP/Municipality"
                 }
             ],
             "description": "All GP/Municipality Admin level APIs"
         },
         {
-            "name": "⚕️ Health Check",
+            "name": "🏛️ District Admin APIs",
             "item": [
                 {
-                    "name": "Server Health",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/health",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "health"
-                            ]
+                    "name": "Reports & Analytics",
+                    "item": [
+                        {
+                            "name": "Collection Trends",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/reports/collection-trends",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "reports",
+                                        "collection-trends"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Waste Distribution",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/reports/waste-distribution",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "reports",
+                                        "waste-distribution"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Block Performance",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/reports/block-performance",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "reports",
+                                        "block-performance"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Activity Logs",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/reports/activity-logs",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "reports",
+                                        "activity-logs"
+                                    ]
+                                }
+                            }
                         }
-                    }
+                    ]
+                },
+                {
+                    "name": "Waste Operations",
+                    "item": [
+                        {
+                            "name": "Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/waste-operations/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "waste-operations",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Trends",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/waste-operations/trends",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "waste-operations",
+                                        "trends"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Summary",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/waste-operations/summary",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "waste-operations",
+                                        "summary"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Dump Yard Management",
+                    "item": [
+                        {
+                            "name": "Stats",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/dump-yard/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "dump-yard",
+                                        "stats"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "List",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{blockAdminToken}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/district/dump-yard/list",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "district",
+                                        "dump-yard",
+                                        "list"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
                 }
-            ]
+            ],
+            "description": "All District Admin level APIs"
         }
     ]
 }

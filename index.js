@@ -1,20 +1,35 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import authRoutes from './routes/authRoutes.js';
-import householdRoutes from './routes/householdRoutes.js';
-import gpMunicipalityRoutes from './routes/gpMunicipalityRoutes.js';
-import vehicleRoutes from './routes/vehicleRoutes.js';
-import reportsRoutes from './routes/reportsRoutes.js';
-import dumpYardRoutes from './routes/dumpYardRoutes.js';
-import dashboardRoutes from './routes/dashboardRoutes.js';
-import gpCollectorsRoutes from './routes/gpCollectorsRoutes.js';
-import gpRoutesRoutes from './routes/gpRoutesRoutes.js';
-import gpCollectionTrackingRoutes from './routes/gpCollectionTrackingRoutes.js';
-import gpSegregationReportsRoutes from './routes/gpSegregationReportsRoutes.js';
-import gpDumpMonitoringRoutes from './routes/gpDumpMonitoringRoutes.js';
-import gpVendorCoordinationRoutes from './routes/gpVendorCoordinationRoutes.js';
-import gpReportsRoutes from './routes/gpReportsRoutes.js';
+
+// Auth Routes
+import authRoutes from './routes/auth/authRoutes.js';
+
+// Block Admin Routes
+import blockDashboardRoutes from './routes/block/dashboardRoutes.js';
+import blockReportsRoutes from './routes/block/reportsRoutes.js';
+import blockGpMunicipalityRoutes from './routes/block/gpMunicipalityRoutes.js';
+import blockVehiclesRoutes from './routes/block/vehiclesRoutes.js';
+import blockDumpYardsRoutes from './routes/block/dumpYardsRoutes.js';
+
+// District Admin Routes
+import districtBlocksMunRoutes from './routes/district/blocksMunicipalitiesRoutes.js';
+import districtBlockAdminsRoutes from './routes/district/blockAdminsRoutes.js';
+import districtVehiclesRoutes from './routes/district/vehiclesRoutes.js';
+import districtWasteOperationsRoutes from './routes/district/wasteOperationsRoutes.js';
+import districtDumpYardRoutes from './routes/district/dumpYardRoutes.js';
+import districtReportsRoutes from './routes/district/reportsRoutes.js';
+
+// GP/Municipality Admin Routes
+import gpDashboardRoutes from './routes/gp/dashboardRoutes.js';
+import gpCollectorsRoutes from './routes/gp/collectorsRoutes.js';
+import gpRoutesRoutes from './routes/gp/routesRoutes.js';
+import gpCollectionTrackingRoutes from './routes/gp/collectionTrackingRoutes.js';
+import gpSegregationReportsRoutes from './routes/gp/segregationReportsRoutes.js';
+import gpDumpMonitoringRoutes from './routes/gp/dumpMonitoringRoutes.js';
+import gpVendorCoordinationRoutes from './routes/gp/vendorCoordinationRoutes.js';
+import gpReportsRoutes from './routes/gp/reportsRoutes.js';
+import gpHouseholdsRoutes from './routes/gp/householdsRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -44,14 +59,30 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API Routes
+// ======================================================================================
+// API ROUTES
+// ======================================================================================
+
+// Auth (Public)
 app.use('/api/auth', authRoutes);
-app.use('/api/households', householdRoutes);
-app.use('/api/gp-municipality', gpMunicipalityRoutes);
-app.use('/api/vehicles', vehicleRoutes);
-app.use('/api/reports', reportsRoutes);
-app.use('/api/dump-yards', dumpYardRoutes);
-app.use('/api/dashboard', dashboardRoutes);
+
+// Block Admin Routes (require block_admin role)
+app.use('/api/block/dashboard', blockDashboardRoutes);
+app.use('/api/block/reports', blockReportsRoutes);
+app.use('/api/block/gp-municipality', blockGpMunicipalityRoutes);
+app.use('/api/block/vehicles', blockVehiclesRoutes);
+app.use('/api/block/dump-yards', blockDumpYardsRoutes);
+
+// District Admin Routes (require district_admin role)
+app.use('/api/district/blocks-municipalities', districtBlocksMunRoutes);
+app.use('/api/district/block-admins', districtBlockAdminsRoutes);
+app.use('/api/district/vehicles', districtVehiclesRoutes);
+app.use('/api/district/waste-operations', districtWasteOperationsRoutes);
+app.use('/api/district/dump-yard', districtDumpYardRoutes);
+app.use('/api/district/reports', districtReportsRoutes);
+
+// GP/Municipality Admin Routes (require gp_admin or municipality_admin role)
+app.use('/api/gp/dashboard', gpDashboardRoutes);
 app.use('/api/gp/collectors', gpCollectorsRoutes);
 app.use('/api/gp/routes', gpRoutesRoutes);
 app.use('/api/gp/collection-tracking', gpCollectionTrackingRoutes);
@@ -59,6 +90,11 @@ app.use('/api/gp/segregation-reports', gpSegregationReportsRoutes);
 app.use('/api/gp/dump-monitoring', gpDumpMonitoringRoutes);
 app.use('/api/gp/vendor-coordination', gpVendorCoordinationRoutes);
 app.use('/api/gp/reports', gpReportsRoutes);
+app.use('/api/gp/households', gpHouseholdsRoutes);
+
+// ======================================================================================
+// ERROR HANDLERS
+// ======================================================================================
 
 // 404 handler
 app.use((req, res) => {
